@@ -1,0 +1,88 @@
+// Substitution Assistant – research prototype data model.
+// Datasets and rule sets are versioned and immutable once imported; the
+// active version is used for new substitution searches and every recorded
+// decision references the exact versions it was made with.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum DecisionOutcome {
+  ACCEPTED_RECOMMENDATION // picker accepted one of the recommendations
+  MANUAL_SELECTION // picker searched and chose a product manually
+  NO_SUBSTITUTE // "No suitable substitute"
+}
+
+model Dataset {
+  id        String     @id @default(cuid())
+  version   Int        @unique
+  name      String
+  isSample  Boolean    @default(false)
+  isActive  Boolean    @default(false)
+  createdAt DateTime   @default(now())
+  products  Product[]
+  decisions SubstitutionDecision[]
+}
+
+model Product {
+  id              String    @id @default(cuid())
+  datasetId       String
+  dataset         Dataset   @relation(fields: [datasetId], references: [id], onDelete: Cascade)
+  code            String
+  name            String
+  category        String
+  packageQuantity Decimal   @db.Decimal(12, 3)
+  packageUnit     String
+  price           Decimal   @db.Decimal(10, 2)
+  ingredients     String?
+  attributes      Json      @default("{}")
+  available       Boolean   @default(true)
+  sourceUrl       String?
+  collectedAt     DateTime?
+
+  @@unique([datasetId, code])
+  @@index([datasetId, category])
+}
+
+model RuleSet {
+  id        String     @id @default(cuid())
+  version   Int        @unique
+  name      String
+  rules     Json
+  isActive  Boolean    @default(false)
+  createdAt DateTime   @default(now())
+  decisions SubstitutionDecision[]
+}
+
+/// One recorded substitution decision made with the "Find a substitute" tool.
+model SubstitutionDecision {
+  id                   String          @id @default(cuid())
+  datasetId            String
+  dataset              Dataset         @relation(fields: [datasetId], references: [id])
+  ruleSetId            String
+  ruleSet              RuleSet         @relation(fields: [ruleSetId], references: [id])
+  pickerName           String?
+  originalProductCode  String
+  originalProductName  String
+  orderedQuantity      Decimal         @db.Decimal(12, 3)
+  outcome              DecisionOutcome
+  selectedProductCode  String?
+  selectedProductName  String?
+  selectedQuantity     Decimal?        @db.Decimal(12, 3)
+  recommendationRank   Int?
+  originalCost         Decimal         @db.Decimal(10, 2)
+  substituteCost       Decimal?        @db.Decimal(10, 2)
+  costDifference       Decimal?        @db.Decimal(10, 2)
+  recommendations      Json?
+  recommendationSource String?
+  durationMs           Int?
+  isMock               Boolean         @default(false)
+  createdAt            DateTime        @default(now())
+
+  @@index([createdAt])
+}
