@@ -3,8 +3,7 @@
   "description": "Mandatory requirements are applied in code before any AI ranking. A product that fails a mandatory rule is never recommended. Preferences only affect the order of eligible products.",
   "maxRecommendations": 3,
   "quantity": {
-    "rounding": "up",
-    "note": "Replacement quantity = ordered total amount / substitute package size, rounded up to a whole package (minimum 1)."
+    "rounding": "up"
   },
   "mandatory": [
     {
@@ -28,7 +27,13 @@
     {
       "id": "preserve-dietary",
       "type": "preserve_attributes",
-      "attributes": ["lactose_free", "gluten_free", "vegan", "organic", "sugar_free"],
+      "attributes": [
+        "lactose_free",
+        "gluten_free",
+        "vegan",
+        "organic",
+        "sugar_free"
+      ],
       "description": "If the unavailable product has a dietary property (lactose-free, gluten-free, vegan, organic, sugar-free), the substitute must have the same property."
     }
   ],

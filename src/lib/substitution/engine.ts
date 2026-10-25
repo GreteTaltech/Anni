@@ -230,7 +230,9 @@ export function ruleBasedExplanation(e: EligibleCandidate): string {
   const parts: string[] = [];
   if (e.preferenceMatches.length) parts.push(e.preferenceMatches.slice(0, 3).join(", "));
   const diff = e.costDifference;
-  if (Math.abs(diff) < 0.005) parts.push("same total price");
+  if (Math.abs(diff) < 0.005) {
+    if (!e.preferenceMatches.includes("same price")) parts.push("same total price");
+  }
   else if (diff < 0) parts.push(`${Math.abs(diff).toFixed(2)} € cheaper in total`);
   else parts.push(`${diff.toFixed(2)} € more in total, within the allowed limit`);
   if (Number.isFinite(e.quantityDeviationPercent) && Math.abs(e.quantityDeviationPercent) >= 1)

@@ -16,7 +16,10 @@ const NAV = [
 
 export function SiteHeader() {
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
+  // The menu is "open" only for the path it was opened on, so navigating closes it.
+  const [openPath, setOpenPath] = useState<string | null>(null);
+  const open = openPath === pathname;
+  const setOpen = (v: boolean) => setOpenPath(v ? pathname : null);
 
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
@@ -55,7 +58,7 @@ export function SiteHeader() {
           className="rounded-lg p-2 text-zinc-600 hover:bg-zinc-100 md:hidden"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
+          onClick={() => setOpen(!open)}
         >
           {open ? <X className="size-5" /> : <Menu className="size-5" />}
         </button>
