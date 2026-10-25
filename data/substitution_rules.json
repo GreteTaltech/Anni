@@ -1,0 +1,92 @@
+{
+  "name": "Rimi e-commerce substitution guideline (sample)",
+  "description": "Mandatory requirements are applied in code before any AI ranking. A product that fails a mandatory rule is never recommended. Preferences only affect the order of eligible products.",
+  "maxRecommendations": 3,
+  "quantity": {
+    "rounding": "up",
+    "note": "Replacement quantity = ordered total amount / substitute package size, rounded up to a whole package (minimum 1)."
+  },
+  "mandatory": [
+    {
+      "id": "same-category",
+      "type": "same_category",
+      "description": "The substitute must belong to the same product category as the unavailable product."
+    },
+    {
+      "id": "price-limit",
+      "type": "price_limit",
+      "maxIncreasePercent": 20,
+      "maxIncreaseAbsolute": 2.0,
+      "description": "The total cost of the replacement may exceed the original order line by at most 20 % or 2.00 EUR, whichever is smaller. Cheaper substitutes are always allowed."
+    },
+    {
+      "id": "quantity-tolerance",
+      "type": "quantity_tolerance",
+      "maxDeviationPercent": 30,
+      "description": "The total replacement amount may deviate from the ordered amount by at most 30 %."
+    },
+    {
+      "id": "preserve-dietary",
+      "type": "preserve_attributes",
+      "attributes": ["lactose_free", "gluten_free", "vegan", "organic", "sugar_free"],
+      "description": "If the unavailable product has a dietary property (lactose-free, gluten-free, vegan, organic, sugar-free), the substitute must have the same property."
+    }
+  ],
+  "preferences": [
+    {
+      "id": "same-brand",
+      "type": "same_attribute",
+      "attribute": "brand",
+      "weight": 3,
+      "description": "Prefer the same brand."
+    },
+    {
+      "id": "same-variant",
+      "type": "same_attribute",
+      "attribute": "fat_percent",
+      "weight": 2,
+      "description": "Prefer the same fat content / variant."
+    },
+    {
+      "id": "same-type",
+      "type": "same_attribute",
+      "attribute": "type",
+      "weight": 2,
+      "description": "Prefer the same product type (e.g. white toast vs rye)."
+    },
+    {
+      "id": "same-shape",
+      "type": "same_attribute",
+      "attribute": "shape",
+      "weight": 2,
+      "description": "Prefer the same shape (pasta)."
+    },
+    {
+      "id": "same-flavour",
+      "type": "same_attribute",
+      "attribute": "flavour",
+      "weight": 2,
+      "description": "Prefer the same flavour."
+    },
+    {
+      "id": "closest-package",
+      "type": "closest_package",
+      "weight": 2,
+      "description": "Prefer the package size closest to the original."
+    },
+    {
+      "id": "closest-price",
+      "type": "closest_price",
+      "weight": 2,
+      "description": "Prefer the smallest price difference."
+    },
+    {
+      "id": "private-label",
+      "type": "attribute_equals",
+      "attribute": "brand",
+      "value": "Rimi",
+      "weight": 1,
+      "description": "When otherwise equal, prefer the Rimi private label."
+    }
+  ]
+}
